@@ -1,0 +1,36 @@
+---
+title: "Week 3 Assignment"
+author: "She Zhang"
+date: "August 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(plotly)
+library(quantmod)
+```
+
+## Microsoft Stock Price Candlestick Plot
+
+```{r}
+
+
+MSFT <- read.csv("~/MSFT.csv",
+                 header=TRUE)
+
+# basic example of ohlc charts
+df <- as.data.frame(MSFT)
+df <- tail(df, 30)
+names(df) <- sub("^MSFT\\.", "", names(df))
+
+i <- list(line = list(color = '#FFD700'))
+d <- list(line = list(color = '#0000ff'))
+
+
+plot_ly(x = df$Date, type="candlestick",
+        open = df$Open, close = df$Close,
+        high = df$High, low = df$Low,
+        increasing = i, decreasing = d)
+```
+
