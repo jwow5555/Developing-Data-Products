@@ -1,0 +1,61 @@
+---
+title: "Week 2 Assignment"
+author: "She Zhang"
+date: "September 10, 2017"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Map of University of Waterloo
+```{r}
+library(shiny)
+library(leaflet)
+
+buildings <- c('SLC - Student Life Center',
+               'MC - Mathematics and Computer',
+               'DC - Davis Center Library',
+               'DWE - Douglas Wright Engineering')
+locinfo <- matrix(c(43.47167,-80.54547,
+                    43.47222,-80.54405,
+                    43.47234,-80.54198,
+                    43.47002,-80.53970), nrow=4, ncol=2, byrow = TRUE)
+rownames(locinfo) <- buildings
+
+ui <- fluidPage(
+  # Application title
+  titlePanel("Locate your building on the map"),
+
+  # Sidebar with options for your building
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("Input1", "Choose your building:", choices = buildings)
+    ),
+
+    # Show a plot of the generated distribution
+    mainPanel(
+      h3("The building you selected is"),
+      textOutput("Output1"),
+      leafletOutput("mymap")
+    )
+))
+
+server <- function(input, output, session) {
+
+  output$Output1 = renderText(input$Input1)
+
+  output$mymap = renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      addMarkers(lat=locinfo[rownames(locinfo)==input$Input1][1],
+               lng=locinfo[rownames(locinfo)==input$Input1][2],
+               popup=input$Input1)
+  })
+}
+
+shinyApp(ui, server)
+
+```
